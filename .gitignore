@@ -1,0 +1,23 @@
+# .gitignore
+
+# Don't commit audio files
+
+*.ogg
+
+# Don't commit libraries
+
+*.dll
+
+# Don't commit NetCDF files (extension map files)
+
+*.nc
+
+# Don't commit game editor
+
+deadbolt_map_editor.exe
+
+# Don't commit game readme files
+
+README.txt
+Editor ReadME.pdf
+options.ini
