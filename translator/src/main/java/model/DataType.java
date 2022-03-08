@@ -2,6 +2,6 @@ package model;
 
 public enum DataType {
 
-    UNKNOWN_DATA, DIALOG_GAME
+    UNKNOWN_DATA, FAKE_DIALOG_GAME, DIALOG_GAME
 
 }

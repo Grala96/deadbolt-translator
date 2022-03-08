@@ -82,7 +82,12 @@ public class FileToHex {
                 currentPartData.setData(new ArrayList<>(recognizedGameDialog));
 
                 // - oznacz je jako znany game dialog
-                currentPartData.setType(DataType.DIALOG_GAME);
+                if(checkCharacterArrayIsFakeDialogGame(currentPartData.getData())){
+                    currentPartData.setType(DataType.FAKE_DIALOG_GAME);
+                } else {
+                    currentPartData.setType(DataType.DIALOG_GAME);
+                }
+
 
                 // - wrzuc do final structure
                 structuredData.add(currentPartData);
@@ -186,6 +191,20 @@ public class FileToHex {
 
     }
 
-    
+    public static boolean checkCharacterArrayIsFakeDialogGame(ArrayList<Character> characters) {
+        if(characters.size() <= 7) return true;
+        if(characters.get(5) == 'o' && Character.isUpperCase(characters.get(6))) return true;
+        if(characters.get(5) == 'w' && Character.isUpperCase(characters.get(6))) return true;
+        if(characters.get(5) == 's' && Character.isUpperCase(characters.get(6))) return true;
+        if(characters.get(5) == 'p' && Character.isUpperCase(characters.get(6))) return true;
+        if(characters.get(5) == 'b' && Character.isUpperCase(characters.get(6))) return true;
+        if(characters.get(5) == 'D' && characters.get(6) == 'B') return true;
+        for(int i = 5; i < characters.size(); i++){
+            if(characters.get(i) < 31 || characters.get(i) > 126) return true;
+            if(characters.get(i) == '_') return true;
+
+        }
+        return false;
+    }
 
 }
