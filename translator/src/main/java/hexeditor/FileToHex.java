@@ -22,7 +22,7 @@ public class FileToHex {
 
         ArrayList<PartData> structuredData = processData(characters);
 
-        saveCharactersToFile(characters,"new.data.win");
+        saveCharactersToFile(characters,"data.win.modified");
 
         saveGameDialogsToCsv(structuredData, "dialogs.csv");
 
