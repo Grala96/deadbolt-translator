@@ -2,9 +2,9 @@ package hexeditor;
 
 import model.DataType;
 import model.PartData;
+import org.apache.commons.io.FileUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,9 @@ public class FileToHex {
 
         ArrayList<PartData> structuredData = processData(characters);
 
-        System.out.println(Arrays.toString(characters.toArray()));
+        saveCharactersToFile(characters,"new.data.win");
+
+//        System.out.println(Arrays.toString(characters.toArray()));
     }
 
     public static ArrayList<Character> convertFileToCharacterArray(InputStream is) throws IOException {
@@ -92,18 +94,6 @@ public class FileToHex {
                 tempList = new ArrayList<>();
 
 
-//                int length = characterArrayList.get(i+1);
-//                for(Integer k = i+5; k<i+5+length;k++){
-//                    if(k+length>characterArrayList.size()) continue;
-//                    result.append(characterArrayList.get(k));
-//                }
-//                result.append("\n");
-//                count++;
-//                System.out.println(result);
-//                result2.append(result);
-//                result = new StringBuilder();
-
-
             } else {
                 // wrzuc znak do tempList
                 tempList.add(characterArrayList.get(i));
@@ -156,5 +146,14 @@ public class FileToHex {
         return true;
     }
 
+    public static void saveCharactersToFile(ArrayList<Character> characters, String fileName) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(fileOutputStream));
+
+        for(Character c : characters){
+            dataOutputStream.write(c);
+        }
+        dataOutputStream.close();
+    }
 
 }
