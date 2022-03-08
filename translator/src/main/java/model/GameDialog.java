@@ -32,7 +32,13 @@ public class GameDialog {
         this.header[2] = characters.get(2);
         this.header[3] = characters.get(3);
         this.header[4] = characters.get(4);
-        this.content = String.valueOf(characters.subList(5, characters.size()));
+
+        StringBuilder sb = new StringBuilder();
+
+        for(Character c : characters.subList(5, characters.size())){
+            sb.append(c);
+        }
+        this.content = sb.toString();
     }
 
 //    public void setLengthDialogInHeader(int length){

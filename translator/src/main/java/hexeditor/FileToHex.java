@@ -1,6 +1,8 @@
 package hexeditor;
 
+import com.opencsv.CSVWriter;
 import model.DataType;
+import model.GameDialog;
 import model.PartData;
 import org.apache.commons.io.FileUtils;
 
@@ -21,6 +23,8 @@ public class FileToHex {
         ArrayList<PartData> structuredData = processData(characters);
 
         saveCharactersToFile(characters,"new.data.win");
+
+        saveGameDialogsToCsv(structuredData, "dialogs.csv");
 
 //        System.out.println(Arrays.toString(characters.toArray()));
     }
@@ -49,7 +53,7 @@ public class FileToHex {
 
         // Sprawdz kazdy bajt czy przynalezy do patternu
         // Iteruj po wszystkich bajtach jeden po drugim
-        for(Integer i = 1686688; i < characterArrayList.size() ; i++){
+        for(Integer i = 0; i < characterArrayList.size() ; i++){
 
             char currentByte = characterArrayList.get(i);
 
@@ -155,5 +159,33 @@ public class FileToHex {
         }
         dataOutputStream.close();
     }
+
+    public static void saveGameDialogsToCsv(ArrayList<PartData> data, String fileName){
+        List<String[]> gameDialogList = new ArrayList<>();
+        String[] header = {"dataPartId","gameDialog"};
+        gameDialogList.add(header);
+
+        for(PartData partData : data){
+            if(partData.getType().equals(DataType.DIALOG_GAME)){
+                try {
+                    GameDialog tempGameDialog = new GameDialog(partData.getData());
+                    String[] temp = {String.valueOf(partData.getPartId()),tempGameDialog.getContent()};
+                    gameDialogList.add(temp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        try(CSVWriter writer = new CSVWriter(new FileWriter(fileName))){
+            writer.writeAll(gameDialogList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    
 
 }
