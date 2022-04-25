@@ -1,13 +1,10 @@
 package service;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HexFileWriterReader {
+public class HexFileReaderWriter {
 
     public static List<Character> loadFromHex(String fileName) {
 

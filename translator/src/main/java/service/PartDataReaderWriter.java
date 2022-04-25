@@ -1,7 +1,6 @@
 package service;
 
 import com.opencsv.CSVWriter;
-import model.DataType;
 import model.GameDialog;
 import model.PartData;
 
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameDialogReaderWriter {
+public class PartDataReaderWriter {
 
     public static void saveToCsv(ArrayList<PartData> data, String fileName) {
         List<String[]> gameDialogList = new ArrayList<>();

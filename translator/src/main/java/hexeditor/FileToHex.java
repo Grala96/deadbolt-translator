@@ -1,16 +1,12 @@
 package hexeditor;
 
-import com.opencsv.CSVWriter;
 import model.DataType;
-import model.GameDialog;
 import model.PartData;
-import org.apache.commons.io.FileUtils;
-import service.GameDialogReaderWriter;
-import service.HexFileWriterReader;
+import service.PartDataReaderWriter;
+import service.HexFileReaderWriter;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FileToHex {
@@ -22,20 +18,20 @@ public class FileToHex {
         String fileToLoadPath = FileToHex.class.getClassLoader().getResource(FILE_TO_LOAD).getPath();
 
         // Load Original File
-        ArrayList<Character> characters = (ArrayList<Character>) HexFileWriterReader.loadFromHex(fileToLoadPath);
+        ArrayList<Character> characters = (ArrayList<Character>) HexFileReaderWriter.loadFromHex(fileToLoadPath);
 
         // Convert data to structured object
         ArrayList<PartData> structuredData = processData(characters);
 
         // Save structured data to CSV
-        GameDialogReaderWriter.saveToCsv(structuredData, "dialogs.csv");
+        PartDataReaderWriter.saveToCsv(structuredData, "dialogs.csv");
 
         // Load structured data from CSV
 
         // Convert structured data to characters
 
         // Save characters to File
-        HexFileWriterReader.saveToHex(characters,"data.win.modified");
+        HexFileReaderWriter.saveToHex(characters,"data.win.modified");
     }
 
 
