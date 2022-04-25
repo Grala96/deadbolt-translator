@@ -5,6 +5,8 @@ import model.DataType;
 import model.GameDialog;
 import model.PartData;
 import org.apache.commons.io.FileUtils;
+import service.GameDialogReaderWriter;
+import service.HexFileWriterReader;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,34 +17,27 @@ public class FileToHex {
 
     public static void main(String[] args) throws IOException {
 
-        InputStream inputStreamDataWin = FileToHex.class.getClassLoader().getResourceAsStream("data.win.original");
-        InputStream inputStreamDeadboltGameExe = FileToHex.class.getClassLoader().getResourceAsStream("data.win.original");
+        final String FILE_TO_LOAD = "data.win.original";
+        final String FILE_TO_SAVE = "data.win.modified";
+        String fileToLoadPath = FileToHex.class.getClassLoader().getResource(FILE_TO_LOAD).getPath();
 
-        ArrayList<Character> characters = convertFileToCharacterArray(inputStreamDataWin);
+        // Load Original File
+        ArrayList<Character> characters = (ArrayList<Character>) HexFileWriterReader.loadFromHex(fileToLoadPath);
 
+        // Convert data to structured object
         ArrayList<PartData> structuredData = processData(characters);
 
-        saveCharactersToFile(characters,"data.win.modified");
+        // Save structured data to CSV
+        GameDialogReaderWriter.saveToCsv(structuredData, "dialogs.csv");
 
-        saveGameDialogsToCsv(structuredData, "dialogs.csv");
+        // Load structured data from CSV
 
-//        System.out.println(Arrays.toString(characters.toArray()));
+        // Convert structured data to characters
+
+        // Save characters to File
+        HexFileWriterReader.saveToHex(characters,"data.win.modified");
     }
 
-    public static ArrayList<Character> convertFileToCharacterArray(InputStream is) throws IOException {
-
-        int value;
-        ArrayList<Character> characterArrayList = new ArrayList<>();
-
-        // Wrzuc kazdy bajt / character jako pojedynczy element do tablicy
-        try (InputStream inputStream = is) {
-            while ((value = inputStream.read()) != -1) {
-                characterArrayList.add((char) value);
-            }
-        }
-
-        return characterArrayList;
-    }
 
     public static ArrayList<PartData> processData(ArrayList<Character> characterArrayList){
 
@@ -153,42 +148,6 @@ public class FileToHex {
         if(toCheck.get(4) != 0) return false;
 
         return true;
-    }
-
-    public static void saveCharactersToFile(ArrayList<Character> characters, String fileName) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-        DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(fileOutputStream));
-
-        for(Character c : characters){
-            dataOutputStream.write(c);
-        }
-        dataOutputStream.close();
-    }
-
-    public static void saveGameDialogsToCsv(ArrayList<PartData> data, String fileName){
-        List<String[]> gameDialogList = new ArrayList<>();
-        String[] header = {"dataPartId","gameDialog"};
-        gameDialogList.add(header);
-
-        for(PartData partData : data){
-            if(partData.getType().equals(DataType.DIALOG_GAME)){
-                try {
-                    GameDialog tempGameDialog = new GameDialog(partData.getData());
-                    String[] temp = {String.valueOf(partData.getPartId()),tempGameDialog.getContent()};
-                    gameDialogList.add(temp);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-        try(CSVWriter writer = new CSVWriter(new FileWriter(fileName))){
-            writer.writeAll(gameDialogList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public static boolean checkCharacterArrayIsFakeDialogGame(ArrayList<Character> characters) {
