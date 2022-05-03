@@ -7,21 +7,20 @@
     <groupId>pl.grala96.games</groupId>
     <artifactId>DeadBoltTranslator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <slf4j.version>1.7.36</slf4j.version>
+    </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>5.3</version>
-        </dependency>
+
+        <!-- LOMBOK & JUNIT TESTS -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -29,16 +28,50 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
         </dependency>
-    </dependencies>
+        <!-- LOMBOK & JUNIT TESTS -->
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+        <!-- Apache Commons IO -->
+        <!-- Library of utilities to assist with developing IO functionality -->
+        <!-- io / comparator / file / filefilter / function / input -->
+        <!-- input.buffer / monitor / output / serialization -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <!-- Apache Commons IO -->
+
+        <!-- Simple reading / writing CSV -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.6</version>
+        </dependency>
+        <!-- Simple reading / writing CSV -->
+
+        <!-- PICO CLI COMMANDS -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.6.3</version>
+        </dependency>
+        <!-- PICO CLI COMMANDS -->
+
+        <!-- LOGGING APP -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- LOGGING APP -->
+
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <!-- This plugin provides the capability to package the artifact in an uber-jar, including -->
+                <!-- its dependencies and to shade - i.e. rename - the packages of some dependencies. -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
@@ -59,7 +92,43 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <!-- The dependency plugin provides the capability to manipulate artifacts. -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/libs
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>maven-central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
 
 </project>
