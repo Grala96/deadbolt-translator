@@ -17,6 +17,7 @@ public class GameDialogTest {
 
     @Before
     public void setUp() throws Exception {
+
         // RECOGNIZED PART OF RAW FILE
         exampleRawGameDialog = new ArrayList<>();
         Character[] characters = {0,'e',0,0,0,'A','n','o','t','h','e','r',' ','n','i','g','h','t','.'};
