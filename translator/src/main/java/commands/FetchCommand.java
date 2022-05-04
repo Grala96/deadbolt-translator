@@ -61,8 +61,8 @@ public class FetchCommand implements Runnable {
 
         // Save structured data to CSV
         ArrayList<DataType> typesAllowed = new ArrayList<>();
-        typesAllowed.add(UNKNOWN_DATA);
-        typesAllowed.add(FAKE_DIALOG_GAME);
+//        typesAllowed.add(UNKNOWN_DATA);
+//        typesAllowed.add(FAKE_DIALOG_GAME);
         typesAllowed.add(DIALOG_GAME);
 
         Path modifiedDataWin = Paths.get(targetOutputPath+"/"+GameFile.DATA_WIN.label+".csv");

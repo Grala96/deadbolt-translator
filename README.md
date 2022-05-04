@@ -21,3 +21,15 @@ Twórca tłumaczenia może dzięki temu przetłumaczyć grę na dowolny język. 
 Dla każdej "porcji danych" ma być wygenerowana suma kontrolna, która po utworzeniu tłumaczeń powinna potencjalnie umożliwić kompatybilność z każdą dostępną wersją gry wyszukując i podmieniając wyłącznie bity odpowiedzialne za przetłumaczone dialogi.
 
 Pierwotna CSV zostaje na starcie okrojna z fragmentów będących "surowymi bajtami", niestety znaczna część bajtów musi zostać rozpoznana ręcznie. Niektóre zdekodowane fragmenty są rzeczywistym ciągiem znaków, które w języku angielskim mają znaczenie, ale nie są częścią dialogów gry. Z tego względu nie mogą być one modyfikowane, gdyż może to powodować błędy w działaniu gry.
+
+# Links
+
+Platformy do wspólnych tłumaczeń:
+
+https://poeditor.com
+
+https://weblate.org
+
+Instalator Windows:
+
+https://www.advancedinstaller.com
