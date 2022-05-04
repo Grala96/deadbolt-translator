@@ -37,3 +37,4 @@ target/*
 # Temporary resources (original DeadBolt game files)
 src/main/resources/original_files
 original_files
+modified_files

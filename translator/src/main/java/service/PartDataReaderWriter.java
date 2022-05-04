@@ -1,25 +1,29 @@
 package service;
 
 import com.opencsv.CSVWriter;
+import model.DataType;
 import model.GameDialog;
 import model.PartData;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PartDataReaderWriter {
 
-    public static void saveToCsv(ArrayList<PartData> data, String fileName) {
+    public static void saveToCsv(ArrayList<PartData> data, Path path, ArrayList<DataType> typesAllowed) {
         List<String[]> gameDialogList = new ArrayList<>();
         String[] header = {"dataPartId","dataType", "gameDialog"};
         gameDialogList.add(header);
 
         for (PartData partData : data) {
 
-            // Filter data with specific type
-//            if (partData.getType().equals(DataType.DIALOG_GAME)) continue;
+            // If partData is not on "whitelist" omit this data
+            if(!typesAllowed.contains(partData.getType())) continue;
+
+            // TODO: Add hash for part of data for validate future problems (and working with difference versions?)
 
             try {
                 GameDialog tempGameDialog = new GameDialog(partData.getData());
@@ -39,7 +43,7 @@ public class PartDataReaderWriter {
             }
         }
 
-        try (CSVWriter writer = new CSVWriter(new FileWriter(fileName))) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(path.toFile()))) {
             writer.writeAll(gameDialogList);
         } catch (IOException e) {
             e.printStackTrace();

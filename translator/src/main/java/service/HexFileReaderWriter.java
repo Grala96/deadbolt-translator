@@ -1,14 +1,17 @@
 package service;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HexFileReaderWriter {
 
-    public static List<Character> loadFromHex(String fileName) {
+    // TODO: Write test for load and save with example small hex file in resources (prepare from original file)
 
-        File file = new File(fileName);
+    public static List<Character> loadFromHex(Path path) {
+
+        File file = path.toFile();
 
         int value;
         ArrayList<Character> characterArrayList = new ArrayList<>();

@@ -5,9 +5,15 @@ import model.PartData;
 import service.PartDataReaderWriter;
 import service.HexFileReaderWriter;
 
+import javax.xml.crypto.Data;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static model.DataType.*;
 
 public class FileToHex {
 
@@ -15,7 +21,7 @@ public class FileToHex {
 
         final String FILE_TO_LOAD = "data.win.original";
         final String FILE_TO_SAVE = "data.win.modified";
-        String fileToLoadPath = FileToHex.class.getClassLoader().getResource(FILE_TO_LOAD).getPath();
+        Path fileToLoadPath = Paths.get(FileToHex.class.getClassLoader().getResource(FILE_TO_LOAD).getPath());
 
         // Load Original File
         ArrayList<Character> characters = (ArrayList<Character>) HexFileReaderWriter.loadFromHex(fileToLoadPath);
@@ -24,7 +30,11 @@ public class FileToHex {
         ArrayList<PartData> structuredData = processData(characters);
 
         // Save structured data to CSV
-        PartDataReaderWriter.saveToCsv(structuredData, "dialogs.csv");
+        ArrayList<DataType> typesAllowed = new ArrayList<>();
+        typesAllowed.add(UNKNOWN_DATA);
+        typesAllowed.add(FAKE_DIALOG_GAME);
+        typesAllowed.add(DIALOG_GAME);
+        PartDataReaderWriter.saveToCsv(structuredData, Paths.get("dialogs.csv"), typesAllowed);
 
         // Load structured data from CSV
 
@@ -58,7 +68,7 @@ public class FileToHex {
 
                 if(!tempList.isEmpty()){
                     currentPartData.setData(tempList);
-                    currentPartData.setType(DataType.UNKNOWN_DATA);
+                    currentPartData.setType(UNKNOWN_DATA);
                     structuredData.add(currentPartData);
                 }
 
@@ -74,9 +84,9 @@ public class FileToHex {
 
                 // - oznacz je jako znany game dialog
                 if(checkCharacterArrayIsFakeDialogGame(currentPartData.getData())){
-                    currentPartData.setType(DataType.FAKE_DIALOG_GAME);
+                    currentPartData.setType(FAKE_DIALOG_GAME);
                 } else {
-                    currentPartData.setType(DataType.DIALOG_GAME);
+                    currentPartData.setType(DIALOG_GAME);
                 }
 
 
@@ -106,7 +116,7 @@ public class FileToHex {
 
             if(i == characterArrayList.size()-1){
                 currentPartData.setData(tempList);
-                currentPartData.setType(DataType.UNKNOWN_DATA);
+                currentPartData.setType(UNKNOWN_DATA);
                 structuredData.add(currentPartData);
             }
 
