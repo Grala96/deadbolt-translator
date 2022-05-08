@@ -26,7 +26,6 @@ public class FetchCommand implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(FetchCommand.class);
     private static final PropertiesLoader properties = PropertiesLoader.getInstance();
-//    private static final String[] REQUIRED_FILES = Arrays.copyOf(GameFiles.class.getEnumConstants(), GameFiles.class.getEnumConstants().length, String[].class);
     private static final List<GameFileType> JSON_FILE_TYPES = Arrays.asList(
             GameFileType.DIA_FP,
             GameFileType.DIA_LV1_4,
@@ -36,6 +35,7 @@ public class FetchCommand implements Runnable {
             GameFileType.DIA_LV3_7,
             GameFileType.DIA_LV4_2
     );
+    private static final String ORIGINAL_ENGLISH_DIALOGS = "DeadBolt_Translation_English";
 
     @CommandLine.Option(
             names = {"-i", "--input"},
@@ -50,7 +50,7 @@ public class FetchCommand implements Runnable {
     private String outputPath;
 
     @Override
-    public void run(){
+    public void run() {
         Path targetInputPath = getTargetPath(inputPath);
         Path targetOutputPath = getTargetPath(outputPath);
 
@@ -112,7 +112,7 @@ public class FetchCommand implements Runnable {
         ArrayList<PartData> structuredDiaLv42 = JsonProcessor.processData(hashMapDiaFp, GameFileType.DIA_LV4_2);
 
         // Merge all structures data to one object
-//        structuredData.addAll(structuredDataWin);
+        structuredData.addAll(structuredDataWin);
         structuredData.addAll(structuredDiaFp);
         structuredData.addAll(structuredDiaLv14);
         structuredData.addAll(structuredDiaLv21);
@@ -123,31 +123,23 @@ public class FetchCommand implements Runnable {
 
         // Filter and remove redundant dialogs for json files
         ArrayList<PartData> filteredStructuredData = new ArrayList<>();
-        for(PartData partData : structuredData){
-            if(!filteredStructuredData.stream().map(PartData::getDataChecksum).collect(Collectors.toList()).contains(partData.getDataChecksum())){
+        for (PartData partData : structuredData) {
+            if (!filteredStructuredData.stream().map(PartData::getDataChecksum).collect(Collectors.toList()).contains(partData.getDataChecksum())) {
                 filteredStructuredData.add(partData);
             }
         }
 
         // Save structured data to CSV (for dialogs)
-        Path gameDialogs = Paths.get(targetOutputPath+"/gameDialogs.csv");
+        Path gameDialogs = Paths.get(targetOutputPath + "/"+ORIGINAL_ENGLISH_DIALOGS+".csv");
         PartDataReaderWriter.saveToCsv(filteredStructuredData, gameDialogs, Collections.singletonList(DIALOG_GAME));
-
-        // Save structured data to CSV (for fake dialogs)
-//        Path gameFakeDialogs = Paths.get(targetOutputPath+"/gameFakeDialogs.csv");
-//        PartDataReaderWriter.saveToCsv(filteredStructuredData, gameFakeDialogs, Collections.singletonList(FAKE_DIALOG_GAME));
-
-        // Save structured data to CSV (for unknown data)
-//        Path gameUnknownData = Paths.get(targetOutputPath+"/gameUnknownData.csv");
-//        PartDataReaderWriter.saveToCsv(filteredStructuredData, gameUnknownData, Collections.singletonList(UNKNOWN_DATA));
 
     }
 
     private Path getGameFilePath(Path path, GameFileType gameFileType) throws IOException {
-        Path targetPath = Paths.get(path +"/"+ gameFileType.label);
+        Path targetPath = Paths.get(path + "/" + gameFileType.label);
         if (!Files.exists(targetPath)) {
-            log.warn("The specified file ["+ gameFileType.label+"] in path ["+path+"] is invalid or is not a directory.");
-            throw new IOException("The required game file was not found! ["+ gameFileType.label+"]");
+            log.warn("The specified file [" + gameFileType.label + "] in path [" + path + "] is invalid or is not a directory.");
+            throw new IOException("The required game file was not found! [" + gameFileType.label + "]");
         }
         return targetPath;
     }
@@ -161,7 +153,7 @@ public class FetchCommand implements Runnable {
             targetPath = defaultPath;
         }
         if (!Files.exists(targetPath) || !Files.isDirectory(targetPath)) {
-            log.warn("The specified path ["+path+"] is invalid or is not a directory.");
+            log.warn("The specified path [" + path + "] is invalid or is not a directory.");
             log.info("Selected the current directory as the path.");
             targetPath = defaultPath;
         }

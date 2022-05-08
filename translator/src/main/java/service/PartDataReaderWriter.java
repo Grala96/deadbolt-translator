@@ -32,15 +32,11 @@ public class PartDataReaderWriter {
 
     public static void saveToCsv(ArrayList<PartData> data, Path path, List<DataType> typesAllowed) {
         List<String[]> gameDialogList = new ArrayList<>();
-//        String[] header = {"term","translation","sourceFile", "checkSum","dataPartId"};
-//        gameDialogList.add(header);
 
         for (PartData partData : data) {
 
             // If partData is not on "whitelist" omit this data
             if(!typesAllowed.contains(partData.getType())) continue;
-
-            // TODO: Add hash for part of data for validate future problems (and working with difference versions?)
 
             try {
                 GameDialog tempGameDialog = new GameDialog(partData.getData());

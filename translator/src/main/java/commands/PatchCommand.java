@@ -9,6 +9,10 @@ public class PatchCommand implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(PatchCommand.class);
 
+    //    private static final String[] REQUIRED_FILES = Arrays.copyOf(GameFiles.class.getEnumConstants(), GameFiles.class.getEnumConstants().length, String[].class);
+
+    // TODO: Add verification game files exist in path
+
     @Override
     public void run(){
 

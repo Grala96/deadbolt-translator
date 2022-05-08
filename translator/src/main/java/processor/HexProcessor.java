@@ -1,5 +1,7 @@
 package processor;
 
+import model.DataType;
+import model.GameDialog;
 import model.GameFileType;
 import model.PartData;
 import utils.CheckSum;
@@ -92,10 +94,17 @@ public class HexProcessor {
         }
 
         // przeedytuj wszystkie obiekty nadajac im hash dla ciagu bajtow
-        for (int i = 0; i < structuredData.size(); i++) {
-            byte[] dataBytes = structuredData.get(i).getData().stream().map(Objects::toString).collect(Collectors.joining()).getBytes(StandardCharsets.UTF_8);
-            String hash = CheckSum.sha256(dataBytes);
-            structuredData.get(i).setDataChecksum(hash);
+        for (PartData partData : structuredData) {
+
+            try {
+                GameDialog gameDialog = new GameDialog(partData.getData());
+                byte[] dataBytes = gameDialog.getContent().getBytes(StandardCharsets.UTF_8);
+                partData.setDataChecksum(CheckSum.sha256(dataBytes));
+            } catch (Exception e) {
+                byte[] dataBytes = partData.getData().stream().map(Objects::toString).collect(Collectors.joining()).getBytes(StandardCharsets.UTF_8);
+                partData.setDataChecksum(CheckSum.sha256(dataBytes));
+            }
+
         }
 
         return structuredData;

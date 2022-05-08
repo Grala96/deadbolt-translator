@@ -2,16 +2,18 @@
 
 UWAGA! Oprogramowanie nie wspiera w pełni kompatybilności z wszystkimi wersjami gry.
 
+README.md jest w trakcie edycji!
+
 # Original files taken into the translation:
 
 - data.win
 - dia_fp.json
-- dia_lv1_4.json
-- dia_lv2_1.json
-- dia_lv2_3.json
-- dia_lv3_5.json
-- dia_lv3_7.json
-- dia_lv4_2.json
+- dia_lv1_4.json (zawartość dialogów pokrywa się z dia_fp.json)
+- dia_lv2_1.json (zawartość dialogów pokrywa się z dia_fp.json)
+- dia_lv2_3.json (zawartość dialogów pokrywa się z dia_fp.json)
+- dia_lv3_5.json (zawartość dialogów pokrywa się z dia_fp.json)
+- dia_lv3_7.json (zawartość dialogów pokrywa się z dia_fp.json)
+- dia_lv4_2.json (zawartość dialogów pokrywa się z dia_fp.json)
 
 # Commands
 
