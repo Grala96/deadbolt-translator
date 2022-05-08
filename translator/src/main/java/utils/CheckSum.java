@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class CheckSum {
 
-    public String sha256(byte[] base) {
+    public static String sha256(byte[] base) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(base);

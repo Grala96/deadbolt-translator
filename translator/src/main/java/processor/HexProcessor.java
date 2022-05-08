@@ -14,7 +14,6 @@ import static model.DataType.*;
 
 public class HexProcessor implements DataProcessor {
 
-    private final CheckSum checkSum = new CheckSum();
     public static final int HEADER_OFFSET = 5;
 
     @Override
@@ -98,7 +97,7 @@ public class HexProcessor implements DataProcessor {
         for (Integer i = 0; i < structuredData.size(); i++) {
             structuredData.get(i).setPartId(i);
             byte[] dataBytes = structuredData.get(i).getData().stream().map(Objects::toString).collect(Collectors.joining()).getBytes(StandardCharsets.UTF_8);
-            String hash = checkSum.sha256(dataBytes);
+            String hash = CheckSum.sha256(dataBytes);
             structuredData.get(i).setDataChecksum(hash);
         }
 
