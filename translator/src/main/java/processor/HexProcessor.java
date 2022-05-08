@@ -26,9 +26,7 @@ public class HexProcessor implements DataProcessor {
 
         // Sprawdz kazdy bajt czy przynalezy do patternu
         // Iteruj po wszystkich bajtach jeden po drugim
-        for (Integer i = 0; i < characterArrayList.size(); i++) {
-
-            char currentByte = characterArrayList.get(i);
+        for (int i = 0; i < characterArrayList.size(); i++) {
 
             // Sprawdz bajt (i nastepne) czy przynalezy do patternu
             if (checkByte(i, characterArrayList)) {
@@ -46,7 +44,6 @@ public class HexProcessor implements DataProcessor {
 
                 // - wyczysc currentPartData, wyczysc tempList
                 currentPartData = new PartData();
-                tempList = new ArrayList<>();
 
                 // - zapakuj szukane dane do currentPartData (subList zgodnie z iloscia zadeklarowana w header)
                 int lengthOfRecognitionGameDialog = characterArrayList.get(i + 1);
@@ -96,7 +93,7 @@ public class HexProcessor implements DataProcessor {
 
         // przeedytuj wszystkie obiekty nadajac im id zgodnie z kolejnoscia w tablicy
         // dodatkowo policz hash dla ciagu bajtow
-        for (Integer i = 0; i < structuredData.size(); i++) {
+        for (int i = 0; i < structuredData.size(); i++) {
             structuredData.get(i).setPartId(i);
             byte[] dataBytes = structuredData.get(i).getData().stream().map(Objects::toString).collect(Collectors.joining()).getBytes(StandardCharsets.UTF_8);
             String hash = CheckSum.sha256(dataBytes);
