@@ -1,7 +1,9 @@
 package model.json.diafp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+@Data
 public class JsonDiaFpMapMission11 {
     @JsonProperty("Dialogue")
     public String dialogue;
