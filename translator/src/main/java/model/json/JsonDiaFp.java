@@ -1,7 +1,8 @@
-package model.json.diafp;
+package model.json;
 
 import lombok.Data;
 import model.json.JsonFile;
+import model.json.diafp.*;
 
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 // import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
