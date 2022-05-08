@@ -1,5 +1,6 @@
 package model.json.diafp;
 
+import lombok.Data;
 import model.json.JsonFile;
 
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
@@ -7,6 +8,7 @@ import model.json.JsonFile;
 /* ObjectMapper om = new ObjectMapper();
 Root root = om.readValue(myJsonString, Root.class); */
 
+@Data
 public class JsonDiaFp extends JsonFile {
     public JsonDiaFpMapMission0 map_mission0;
     public JsonDiaFpMapMission1 map_mission1;
