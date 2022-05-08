@@ -33,7 +33,7 @@ public class HexProcessor implements DataProcessor {
 
             // Sprawdz bajt (i nastepne) czy przynalezy do patternu
             if (checkByte(i, characterArrayList)) {
-                
+
                 if (!tempList.isEmpty()) {
                     // Jesli przynalezy to:
                     // - tymczasowo trzymane dane (uzbierane wczesniej) wrzuc do currentPartData o ile tempList nie jest pusty

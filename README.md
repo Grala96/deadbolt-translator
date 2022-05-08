@@ -1,9 +1,10 @@
 # DeadBolt Translator Tool
 
+UWAGA! Oprogramowanie nie wspiera w pełni kompatybilności z wszystkimi wersjami gry.
+
 # Original files taken into the translation:
 
 - data.win
-- deadbolt_game.exe
 - dia_fp.json
 - dia_lv1_4.json
 - dia_lv2_1.json
@@ -23,6 +24,10 @@ patch - na podstawie gotowego pliku o dedykowanej strukturze (export z POEditor 
 
 - input - ścieżka wejściowa, czyli CSV zawierający strukturę zawierającą wyeksportowane dialogi z gry wraz z tłumaczeniem
 - output - ścieżka wyjściowa, czyli katalog z oryginalnymi plikami gry, które zostaną zmodyfikowane
+
+# Struktury danych
+
+checkSum - sha256 dla ciągu bajtów (obejmuje nagłówek + dialog dla plików hex)
 
 # How it works?
 
