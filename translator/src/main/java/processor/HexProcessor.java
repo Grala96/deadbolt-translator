@@ -1,5 +1,6 @@
 package processor;
 
+import model.GameFileType;
 import model.PartData;
 import utils.CheckSum;
 
@@ -12,12 +13,11 @@ import java.util.stream.Collectors;
 
 import static model.DataType.*;
 
-public class HexProcessor implements DataProcessor {
+public class HexProcessor {
 
     public static final int HEADER_OFFSET = 5;
 
-    @Override
-    public ArrayList<PartData> processData(ArrayList<Character> characterArrayList, String source) {
+    public static ArrayList<PartData> processData(ArrayList<Character> characterArrayList, GameFileType source) {
 
         ArrayList<PartData> structuredData = new ArrayList<>();
 
@@ -91,10 +91,8 @@ public class HexProcessor implements DataProcessor {
 
         }
 
-        // przeedytuj wszystkie obiekty nadajac im id zgodnie z kolejnoscia w tablicy
-        // dodatkowo policz hash dla ciagu bajtow
+        // przeedytuj wszystkie obiekty nadajac im hash dla ciagu bajtow
         for (int i = 0; i < structuredData.size(); i++) {
-            structuredData.get(i).setPartId(i);
             byte[] dataBytes = structuredData.get(i).getData().stream().map(Objects::toString).collect(Collectors.joining()).getBytes(StandardCharsets.UTF_8);
             String hash = CheckSum.sha256(dataBytes);
             structuredData.get(i).setDataChecksum(hash);

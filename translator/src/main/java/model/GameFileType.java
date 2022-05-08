@@ -9,7 +9,8 @@ public enum GameFileType {
     DIA_LV2_1("dia_lv2_1.json"),
     DIA_LV3_7("dia_lv3_7.json"),
     DIA_LV2_3("dia_lv2_3.json"),
-    DIA_LV4_2("dia_lv4_2.json");
+    DIA_LV4_2("dia_lv4_2.json"),
+    DIA_JSON("dia_lvX_X.json");
 
     public final String label;
 
