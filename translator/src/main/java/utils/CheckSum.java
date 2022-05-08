@@ -3,16 +3,18 @@ package utils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-public abstract class CheckSum {
+public class CheckSum {
 
-    public static String sha256(final ArrayList<Character> base) {
+    public String sha256(byte[] base) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            final byte[] hash = digest.digest(base.toString().getBytes(StandardCharsets.UTF_8));
-            final StringBuilder hexString = new StringBuilder();
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base);
+            StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
-                final String hex = Integer.toHexString(0xff & b);
+                String hex = Integer.toHexString(0xff & b);
                 if (hex.length() == 1)
                     hexString.append('0');
                 hexString.append(hex);

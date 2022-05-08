@@ -1,12 +1,14 @@
 package commands;
 
-import hexeditor.FileToHex;
+import processor.DataProcessor;
 import model.DataType;
-import model.GameFile;
+import model.GameFileType;
 import model.PartData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
+import processor.HexProcessor;
+import processor.JsonProcessor;
 import service.HexFileReaderWriter;
 import service.PartDataReaderWriter;
 import utils.PropertiesLoader;
@@ -16,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static model.DataType.*;
 
@@ -44,40 +48,57 @@ public class FetchCommand implements Runnable {
         Path targetOutputPath = getTargetPath(outputPath);
 
         Path dataWinPath = null, diaFpPath = null;
+        Path diaLv14Path, diaLv21Path, diaLv23Path, diaLv35Path, diaLv37Path, diaLv42Path;
 
         try {
-            dataWinPath = getGameFilePath(targetInputPath, GameFile.DATA_WIN);
-            diaFpPath = getGameFilePath(targetInputPath, GameFile.DIA_FP);
+            dataWinPath = getGameFilePath(targetInputPath, GameFileType.DATA_WIN);
+            diaFpPath = getGameFilePath(targetInputPath, GameFileType.DIA_FP);
+            diaLv14Path = getGameFilePath(targetInputPath, GameFileType.DIA_LV1_4);
+            diaLv21Path = getGameFilePath(targetInputPath, GameFileType.DIA_LV2_1);
+            diaLv23Path = getGameFilePath(targetInputPath, GameFileType.DIA_LV2_3);
+            diaLv35Path = getGameFilePath(targetInputPath, GameFileType.DIA_LV3_5);
+            diaLv37Path = getGameFilePath(targetInputPath, GameFileType.DIA_LV3_7);
+            diaLv42Path = getGameFilePath(targetInputPath, GameFileType.DIA_LV4_2);
         } catch (IOException e) {
             log.error("An error occurred while reading a game file.", e);
             System.exit(126);
         }
 
-        // Load Original File
-        ArrayList<Character> characters = (ArrayList<Character>) HexFileReaderWriter.loadFromHex(dataWinPath);
+        // Declare final structured object
+        ArrayList<PartData> structuredData = new ArrayList<>();
 
-        // Convert data to structured object
-        ArrayList<PartData> structuredData = FileToHex.processData(characters);
+        // Load original files
+        ArrayList<Character> charactersDataWin = (ArrayList<Character>) HexFileReaderWriter.loadFromHex(dataWinPath);
 
-        // Save structured data to CSV
-        ArrayList<DataType> typesAllowed = new ArrayList<>();
-//        typesAllowed.add(UNKNOWN_DATA);
-//        typesAllowed.add(FAKE_DIALOG_GAME);
-        typesAllowed.add(DIALOG_GAME);
+        // Declare Processors
+        DataProcessor dataHexProcessor = new HexProcessor();
+        DataProcessor dataJsonProcessor = new JsonProcessor();
 
-        Path modifiedDataWin = Paths.get(targetOutputPath+"/"+GameFile.DATA_WIN.label+".csv");
-        PartDataReaderWriter.saveToCsv(structuredData, modifiedDataWin, typesAllowed);
+        // Convert data for [data.win] to structured objects
+        ArrayList<PartData> structuredDataWin = dataHexProcessor.processData(charactersDataWin, GameFileType.DATA_WIN.label);
 
-        log.info(targetInputPath.toString());
-        log.info(targetOutputPath.toString());
+        // Merge all structures data to one object
+        structuredData.addAll(structuredDataWin);
+
+        // Save structured data to CSV (for dialogs)
+        Path gameDialogs = Paths.get(targetOutputPath+"/gameDialogs.csv");
+        PartDataReaderWriter.saveToCsv(structuredData, gameDialogs, Collections.singletonList(DIALOG_GAME));
+
+        // Save structured data to CSV (for fake dialogs)
+        Path gameFakeDialogs = Paths.get(targetOutputPath+"/gameFakeDialogs.csv");
+        PartDataReaderWriter.saveToCsv(structuredData, gameFakeDialogs, Collections.singletonList(FAKE_DIALOG_GAME));
+
+        // Save structured data to CSV (for unknown data)
+        Path gameUnknownData = Paths.get(targetOutputPath+"/gameUnknownData.csv");
+        PartDataReaderWriter.saveToCsv(structuredData, gameUnknownData, Collections.singletonList(UNKNOWN_DATA));
 
     }
 
-    private Path getGameFilePath(Path path, GameFile gameFile) throws IOException {
-        Path targetPath = Paths.get(path +"/"+gameFile.label);
+    private Path getGameFilePath(Path path, GameFileType gameFileType) throws IOException {
+        Path targetPath = Paths.get(path +"/"+ gameFileType.label);
         if (!Files.exists(targetPath)) {
-            log.warn("The specified file ["+gameFile.label+"] in path ["+path+"] is invalid or is not a directory.");
-            throw new IOException("The required game file was not found! ["+gameFile.label+"]");
+            log.warn("The specified file ["+ gameFileType.label+"] in path ["+path+"] is invalid or is not a directory.");
+            throw new IOException("The required game file was not found! ["+ gameFileType.label+"]");
         }
         return targetPath;
     }

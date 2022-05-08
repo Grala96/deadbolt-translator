@@ -38,3 +38,4 @@ target/*
 src/main/resources/original_files
 original_files
 modified_files
+fetched_data

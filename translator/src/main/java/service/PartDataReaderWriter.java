@@ -13,9 +13,12 @@ import java.util.List;
 
 public class PartDataReaderWriter {
 
-    public static void saveToCsv(ArrayList<PartData> data, Path path, ArrayList<DataType> typesAllowed) {
+    // POEditor CSV structure
+    // term, translation (optional), context (optional), reference (optional), comment (optional)
+
+    public static void saveToCsv(ArrayList<PartData> data, Path path, List<DataType> typesAllowed) {
         List<String[]> gameDialogList = new ArrayList<>();
-        String[] header = {"dataPartId","dataType", "gameDialog"};
+        String[] header = {"term","translation","sourceFile", "checkSum","dataPartId"};
         gameDialogList.add(header);
 
         for (PartData partData : data) {
@@ -28,16 +31,20 @@ public class PartDataReaderWriter {
             try {
                 GameDialog tempGameDialog = new GameDialog(partData.getData());
                 String[] temp = {
-                        String.valueOf(partData.getPartId()),
-                        String.valueOf(partData.getType()),
-                        tempGameDialog.getContent()
+                        tempGameDialog.getContent(),
+                        String.valueOf(partData.getTranslation()),
+                        String.valueOf(partData.getSourceFile()),
+                        String.valueOf(partData.getDataChecksum()),
+                        String.valueOf(partData.getPartId())
                 };
                 gameDialogList.add(temp);
             } catch (Exception e) {
                 String[] temp = {
-                        String.valueOf(partData.getPartId()),
-                        String.valueOf(partData.getType()),
-                        String.valueOf(partData.getData())
+                        String.valueOf(partData.getData()),
+                        String.valueOf(partData.getTranslation()),
+                        String.valueOf(partData.getSourceFile()),
+                        String.valueOf(partData.getDataChecksum()),
+                        String.valueOf(partData.getPartId())
                 };
                 gameDialogList.add(temp);
             }

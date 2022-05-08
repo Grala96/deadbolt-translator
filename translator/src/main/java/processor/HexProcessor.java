@@ -1,18 +1,24 @@
-package hexeditor;
+package processor;
 
 import model.PartData;
 import utils.CheckSum;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static model.DataType.*;
 
-public class HexProcessor {
+public class HexProcessor implements DataProcessor {
 
+    private final CheckSum checkSum = new CheckSum();
     public static final int HEADER_OFFSET = 5;
 
-    public static ArrayList<PartData> processData(ArrayList<Character> characterArrayList, String source) {
+    @Override
+    public ArrayList<PartData> processData(ArrayList<Character> characterArrayList, String source) {
 
         ArrayList<PartData> structuredData = new ArrayList<>();
 
@@ -34,16 +40,13 @@ public class HexProcessor {
                 // - wrzuc calosc do finalnej struktury
 
                 if (!tempList.isEmpty()) {
-                    String checkSum = CheckSum.sha256(tempList);
                     currentPartData.setData(tempList);
                     currentPartData.setType(UNKNOWN_DATA);
                     currentPartData.setSourceFile(source);
-                    currentPartData.setDataChecksum(checkSum);
                     structuredData.add(currentPartData);
                 }
 
                 // - wyczysc currentPartData, wyczysc tempList
-
                 currentPartData = new PartData();
                 tempList = new ArrayList<>();
 
@@ -61,10 +64,6 @@ public class HexProcessor {
 
                 // Dopisujemy informacje o pliku zrodlowym
                 currentPartData.setSourceFile(source);
-
-                // Dopisujemy sume kontrolna
-                String checkSum = CheckSum.sha256(tempList);
-                currentPartData.setDataChecksum(checkSum);
 
                 // - wrzuc do final structure
                 structuredData.add(currentPartData);
@@ -98,8 +97,12 @@ public class HexProcessor {
         }
 
         // przeedytuj wszystkie obiekty nadajac im id zgodnie z kolejnoscia w tablicy
+        // dodatkowo policz hash dla ciagu bajtow
         for (Integer i = 0; i < structuredData.size(); i++) {
             structuredData.get(i).setPartId(i);
+            byte[] dataBytes = structuredData.get(i).getData().stream().map(Objects::toString).collect(Collectors.joining()).getBytes(StandardCharsets.UTF_8);
+            String hash = checkSum.sha256(dataBytes);
+            structuredData.get(i).setDataChecksum(hash);
         }
 
         return structuredData;
@@ -132,17 +135,43 @@ public class HexProcessor {
     }
 
     public static boolean checkCharacterArrayIsFakeDialogGame(ArrayList<Character> characters) {
+
+        // Too short to be a dialogue
         if (characters.size() <= 7) return true;
+
+        // For phrases such as 'oDialogueTree'
         if (characters.get(5) == 'o' && Character.isUpperCase(characters.get(6))) return true;
+
+        // For phrases such as 'wKnockMuffled'
         if (characters.get(5) == 'w' && Character.isUpperCase(characters.get(6))) return true;
+
+        // For phrases such as 'sEfDust1'
         if (characters.get(5) == 's' && Character.isUpperCase(characters.get(6))) return true;
+
+        // For phrases such as 'pTrigger'
         if (characters.get(5) == 'p' && Character.isUpperCase(characters.get(6))) return true;
+
+        // For phrases such as 'bGraffiti'
         if (characters.get(5) == 'b' && Character.isUpperCase(characters.get(6))) return true;
+
+        // For phrases such as 'rInit'
+        if (characters.get(5) == 'r' && Character.isUpperCase(characters.get(6))) return true;
+
+        // For phrases such as 'DBH5_lp'
         if (characters.get(5) == 'D' && characters.get(6) == 'B') return true;
+
+        // For phrases such as 'bgGodMoon'
+        if (characters.get(5) == 'b' && characters.get(6) == 'g' && Character.isUpperCase(characters.get(7))) return true;
+        
+        // For mark files with extensions
+        for(String extension : Arrays.asList(".bmp",".dll",".wav",".gml",".txt",".exe",".ogg",".nc",".sav",".ini",".png")){
+            if(characters.stream().map(Object::toString).collect(Collectors.joining()).contains(extension)) return true;
+        }
+
+        // For mark phrases such as 'gml_Room_rm_dock_Create'
         for (int i = 5; i < characters.size(); i++) {
             if (characters.get(i) < 31 || characters.get(i) > 126) return true;
             if (characters.get(i) == '_') return true;
-
         }
         return false;
     }
