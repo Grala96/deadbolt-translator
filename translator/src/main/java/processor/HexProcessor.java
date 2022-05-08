@@ -33,17 +33,14 @@ public class HexProcessor implements DataProcessor {
 
             // Sprawdz bajt (i nastepne) czy przynalezy do patternu
             if (checkByte(i, characterArrayList)) {
-
-                // Jesli przynalezy to:
-                // - tymczasowo trzymane dane wrzuc do currentPartData o ile tempList nie jest pusty
-                // - oznacz je jako nierozpoznane
-                // - wrzuc calosc do finalnej struktury
-
+                
                 if (!tempList.isEmpty()) {
+                    // Jesli przynalezy to:
+                    // - tymczasowo trzymane dane (uzbierane wczesniej) wrzuc do currentPartData o ile tempList nie jest pusty
                     currentPartData.setData(tempList);
-                    currentPartData.setType(UNKNOWN_DATA);
-                    currentPartData.setSourceFile(source);
-                    structuredData.add(currentPartData);
+                    currentPartData.setType(UNKNOWN_DATA); // - oznacz je jako nierozpoznane (zgromadzilismy je wczesniej)
+                    currentPartData.setSourceFile(source); // dopisz zrodlo danych
+                    structuredData.add(currentPartData); // - wrzuc calosc do finalnej struktury
                 }
 
                 // - wyczysc currentPartData, wyczysc tempList
@@ -161,11 +158,14 @@ public class HexProcessor implements DataProcessor {
         if (characters.get(5) == 'D' && characters.get(6) == 'B') return true;
 
         // For phrases such as 'bgGodMoon'
-        if (characters.get(5) == 'b' && characters.get(6) == 'g' && Character.isUpperCase(characters.get(7))) return true;
-        
+        if (characters.get(5) == 'b' && characters.get(6) == 'g' && Character.isUpperCase(characters.get(7)))
+            return true;
+
         // For mark files with extensions
-        for(String extension : Arrays.asList(".bmp",".dll",".wav",".gml",".txt",".exe",".ogg",".nc",".sav",".ini",".png")){
-            if(characters.stream().map(Object::toString).collect(Collectors.joining()).contains(extension)) return true;
+        List<String> extensions = Arrays.asList(".bmp", ".dll", ".wav", ".gml", ".txt", ".exe", ".ogg", ".nc", ".sav", ".ini", ".png");
+        for (String extension : extensions) {
+            if (characters.stream().map(Object::toString).collect(Collectors.joining()).contains(extension))
+                return true;
         }
 
         // For mark phrases such as 'gml_Room_rm_dock_Create'
